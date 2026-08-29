@@ -12,15 +12,17 @@ const Part = (props) => (
   <p>{props.part.name} {props.part.exercises}</p>
 )
 
-const Total = (props) => <p>Number of exercises {props.total}</p>
+const Total = (props) => <p><b>Number of exercises {props.total}</b></p>
 
 const Course = (props) => {
   const name = props.course.name
   const parts = props.course.parts
+  const total = props.course.parts.map((part) => part.exercises).reduce((a, b) => a + b, 0)
   return (
     <>
       <Header course={name} />
       <Content parts={parts} />
+      <Total total={total} />
     </>
   )
 }
