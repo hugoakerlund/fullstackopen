@@ -17,7 +17,8 @@ const Total = (props) => <p><b>Number of exercises {props.total}</b></p>
 const Course = (props) => {
   const name = props.course.name
   const parts = props.course.parts
-  const total = props.course.parts.map((part) => part.exercises).reduce((a, b) => a + b, 0)
+  const total = parts.reduce((a, b) => a + b.exercises, 0)
+
   return (
     <>
       <Header course={name} />
