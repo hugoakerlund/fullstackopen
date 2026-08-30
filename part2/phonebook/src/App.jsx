@@ -60,6 +60,13 @@ const App = () => {
       }
       setPersons(persons.concat(newPerson))
       personSet.add(newPerson)
+
+      const baseUrl = 'http://localhost:3001/persons'
+      axios
+        .post(baseUrl, newPerson)
+        .then(response => {
+          console.log(response)
+        })
     }
 
     setNewName('')
