@@ -23,12 +23,14 @@ const Form = (props) => (
 
 const PersonList = (props) => (
   <div>
-    {props.persons.map((person) => <Person key={person.id} name={person.name} number={person.number} /> )}
+    {props.persons.map((person, id) => <Person key={id} name={person.name} number={person.number} id={person.id} delete={props.deletePerson} /> )}
   </div>
 )
 
 const Person = (props) => (
-  <p>{props.name} {props.number}</p>
+  <p>
+    {props.name} {props.number} <button onClick={() => props.delete(props.id)}>delete</button>
+  </p>
 )
 
 const App = () => {
@@ -52,24 +54,22 @@ const App = () => {
     if (personSet.has(newName)) {
       alert(`${newName} is already added to phonebook`)
     }
+
     else {
       const newPerson = {
         name: newName,
         number: newNumber,
-        id: persons.length + 1
       }
-      setPersons(persons.concat(newPerson))
-      personSet.add(newPerson)
 
       personService
-        .create(newPerson)
+        .createPerson(newPerson)
         .then(returnedPerson => {
-          console.log("Added new person:", returnedPerson)
+          setPersons(persons.concat(returnedPerson))
+          personSet.add(newPerson)
+          setNewName('')
+          setNewNumber('')
         })
     }
-
-    setNewName('')
-    setNewNumber('')
   }
 
   const handleNameChange = (event) => {
@@ -84,6 +84,18 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
+  const handlePersonDelete = id => {
+    const personToDelete = persons.find((person) => id === person.id).name
+    if(confirm(`Delete ${personToDelete}?`)) {
+      personService
+        .deletePerson(id)
+        .then(response => {
+          setPersons(persons.filter((person) => person.id !== id))
+        })
+    }
+  }
+
+
   const personsToShow = newFilter.length > 0
     ? persons.filter(person => person.name.toLowerCase().includes(newFilter.toLowerCase()))
     : persons
@@ -95,7 +107,7 @@ const App = () => {
       <h3>Add a new</h3>
       <Form onSubmit={addEntry} nameValue={newName} numberValue={newNumber} nameOnChange={handleNameChange} numberOnChange={handleNumberChange} />
       <h3>Numbers</h3>
-      <PersonList persons={personsToShow} />
+      <PersonList persons={personsToShow} deletePerson={handlePersonDelete} />
     </div>
   )
 }
