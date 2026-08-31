@@ -52,24 +52,37 @@ const App = () => {
     event.preventDefault()
 
     if (personSet.has(newName)) {
-      alert(`${newName} is already added to phonebook`)
+      if (confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        const personToChange = persons.find((person) => person.name === newName)
+        const changedPerson = { ...personToChange, number: newNumber }
+        modifyPerson(changedPerson)
+      }
     }
 
     else {
-      const newPerson = {
-        name: newName,
-        number: newNumber,
-      }
-
-      personService
-        .createPerson(newPerson)
-        .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson))
-          personSet.add(newPerson)
-          setNewName('')
-          setNewNumber('')
-        })
+      const newPerson = {name: newName, number: newNumber}
+      createNewPerson(newPerson)
     }
+
+    setNewName('')
+    setNewNumber('')
+  }
+
+  const modifyPerson = (changedPerson) => {
+    personService
+      .modifyPerson(changedPerson.id, changedPerson)
+      .then((returnedPerson) => {
+        setPersons(persons.map((person) => (person.id !== changedPerson.id ? person : returnedPerson)))
+      })
+  }
+
+  const createNewPerson = newPerson => {
+    personService
+      .createPerson(newPerson)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        personSet.add(newPerson)
+      })
   }
 
   const handleNameChange = (event) => {
