@@ -19,15 +19,21 @@ const CountryList = (props) => {
 
   return (
     <div>
-      {props.countries.map((country, i) => <Country key={i} country={country} />)}
+      {props.countries.map((country, i) => {
+        if (props.showView.get(country.name.common) === true) {
+          return <CountryPage key={i} country={country} />
+        }
+        return <Country key={i} country={country} showView={props.showView} handleViewChange={props.handleViewChange} />
+        }
+      )}
     </div>
   )
 }
 
 const Country = (props) => (
-  <>
-    {props.country.name.common} <br />
-  </>
+    <>
+      {props.country.name.common}  <button onClick={() => props.handleViewChange(props.country.name.common)}>Show</button> <br />
+    </>
 )
 
 const CountryPage = (props) => {
@@ -55,17 +61,30 @@ const App = () => {
 
   const [newFilter, setNewFilter] = useState('')
   const [countries, setCountries] = useState([])
+  const [showView, setShowView] = useState(new Map())
 
   useEffect(() => {
     countryService
       .getAll()
       .then(returnedData => {
         setCountries(returnedData)
+        let newShowView = new Map()
+        for (let i = 0; i < returnedData.length; ++i) {
+          let name = returnedData[i].name.common
+          newShowView.set(name, false)
+        }
+        setShowView(newShowView)
       })
   }, [])
 
   const handleCountryChange = (event) => {
     setNewFilter(event.target.value)
+  }
+
+  const handleViewChange = (name) => {
+    let copy = new Map(showView)
+    copy.set(name, !copy[name])
+    setShowView(copy)
   }
 
   const countriesToShow = newFilter.length > 0
@@ -75,7 +94,7 @@ const App = () => {
   return (
     <div>
       find countries <input value={newFilter} onChange={handleCountryChange}/>
-      <CountryList countries={countriesToShow} />
+      <CountryList countries={countriesToShow} showView={showView} handleViewChange={handleViewChange} />
     </div>
   )
 }
