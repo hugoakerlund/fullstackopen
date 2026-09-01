@@ -43,6 +43,18 @@ const CountryPage = (props) => {
     const capital = country.capital['0']
     const area = country.area
     const flag = country.flags['png']
+    const [weatherData, setWeatherData] = useState({ temperature: null, windSpeed: null, iconUrl: null })
+
+    useEffect(() => {
+      countryService
+        .getWeather(capital)
+        .then(returnedData => {
+          const icon = returnedData.weather['0'].icon
+          const iconUrl = `https://openweathermap.org/payload/api/media/file/${icon}.png`
+          setWeatherData({ temperature: returnedData.main.temp, windSpeed: returnedData.wind.speed, iconUrl: iconUrl })
+      })
+    }, [])
+
     return (
       <div>
         <h1>{name}</h1>
@@ -53,6 +65,10 @@ const CountryPage = (props) => {
           {languages.map((language, i) => <li key={i}>{language}</li>)}
         </ul>
         <img src={flag}/>
+        <h2>Weather in {capital}</h2>
+        Temperature {weatherData.temperature} Celsius <br />
+        <img src={weatherData.iconUrl}/> <br />
+        Wind {weatherData.windSpeed} m/s <br />
       </div>
     )
 }
