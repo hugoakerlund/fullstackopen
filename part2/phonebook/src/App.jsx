@@ -40,7 +40,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const [notification, setNewNotification] = useState(null)
+  const [notification, setNewNotification] = useState({ message: null, error: false })
 
   useEffect(() => {
       personService
@@ -75,10 +75,19 @@ const App = () => {
       .modifyPerson(changedPerson.id, changedPerson)
       .then((returnedPerson) => {
         setPersons(persons.map((person) => (person.id !== changedPerson.id ? person : returnedPerson)))
-        setNewNotification(`Modified number belonging to '${changedPerson.name}'`)
+        setNewNotification({ message: `Modified number belonging to '${changedPerson.name}'`, error: false })
         setTimeout(() => {
-          setNewNotification(null)
+          setNewNotification({ message: null, error: false })
         }, 2000)
+      })
+      .catch(error => {
+        setNewNotification(
+          { message: `Information of '${changedPerson.name}' has already been removed from server`, error: true }
+        )
+        setTimeout(() => {
+          setNewNotification({ message: null, error: false })
+        }, 5000)
+        setPersons(persons.filter((person) => person.id !== changedPerson.id))
       })
   }
 
@@ -88,9 +97,9 @@ const App = () => {
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
         personSet.add(newPerson)
-        setNewNotification(`Added '${newPerson.name}'`)
+        setNewNotification({ message: `Added '${newPerson.name}'`, error: false })
         setTimeout(() => {
-          setNewNotification(null)
+          setNewNotification({ message: null, error: false })
         }, 2000)
       })
   }
@@ -126,7 +135,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notification} />
+      <Notification message={notification.message} error={notification.error} />
       <Filter value={newFilter} onChange={handleFilterChange} />
       <h3>Add a new</h3>
       <Form onSubmit={addEntry} nameValue={newName} numberValue={newNumber} nameOnChange={handleNameChange} numberOnChange={handleNumberChange} />
