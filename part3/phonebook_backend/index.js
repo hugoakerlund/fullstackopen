@@ -30,6 +30,13 @@ app.get('/', (request, response) => {
   response.send('<h1>Hello, World!</h1>')
 })
 
+app.get('/info', (request, response) => {
+  let count = persons.length
+  let date = new Date()
+  let msg =`<p>Phonebook has info for ${count} people</p> </br> ${date}`
+  response.send(msg)
+})
+
 app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
