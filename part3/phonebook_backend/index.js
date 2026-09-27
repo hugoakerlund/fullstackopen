@@ -38,17 +38,17 @@ const errorHandler = (error, request, response, next) => {
 }
 
 
-let persons = []
-
 app.get('/', (request, response) => {
   response.send('<h1>Hello, World!</h1>')
 })
 
 app.get('/info', (request, response) => {
-  let count = persons.length
-  let date = new Date()
-  let msg =`<p>Phonebook has info for ${count} people</p> </br> ${date}`
-  response.send(msg)
+  Person.find({}).then(persons => {
+    let count = persons.length
+    let date = new Date()
+    let msg =`<p>Phonebook has info for ${count} people</p> </br> ${date}`
+    response.send(msg)
+  })
 })
 
 app.get('/api/persons', (request, response) => {
@@ -94,12 +94,6 @@ app.post('/api/persons', (request, response) => {
   if (!number) {
     return response.status(400).json({
       error: 'number missing'
-    })
-  }
-
-  if (persons.find(person => person.name === name)) {
-    return response.status(400).json({
-      error: 'name must be unique'
     })
   }
 
