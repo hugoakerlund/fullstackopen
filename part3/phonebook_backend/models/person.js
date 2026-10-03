@@ -6,7 +6,7 @@ mongoose.set('strictQuery', false)
 
 console.log('connecting to', url)
 mongoose.connect(url, { family: 4 })
-  .then(result => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch(error => {
@@ -27,13 +27,13 @@ const personSchema = new mongoose.Schema({
         if (v.length < 8) { return false }
 
         let parts = v.split('-')
-        if (parts.length != 2) { return false }
+        if (parts.length !== 2) { return false }
 
-        let first = parts[0];
-        let second = parts[1];
+
+        let first = parts[0]
+        let second = parts[1]
         if (first.length < 2 || first.length > 3) { return false }
-
-        return /^\d+$/.test(first) && /\^\d+$/.test(second);
+        return /^\d+$/.test(first) && /^\d+$/.test(second)
       },
       message: props => `${props.value} is not a valid phone number!`
     },
