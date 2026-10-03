@@ -102,6 +102,11 @@ const App = () => {
           setNewNotification({ message: null, error: false })
         }, 2000)
       })
+      .catch(error => {
+        setNewNotification(
+          { message: error.response.data.error, error: true }
+        )
+      })
   }
 
   const handleNameChange = (event) => {
