@@ -51,6 +51,22 @@ test('blog is added to database', async () => {
   assert(title.includes('123'))
 })
 
+test('blog is removed from the database', async () => {
+  const blogsAtBeginning = await helper.blogsInDb()
+  const blogToDelete = blogsAtBeginning[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  const ids = blogsAtEnd.map(n => n.id)
+
+  assert(!ids.includes(blogToDelete.id))
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+})
+
 
 test('unique identifier property of the blog posts is named id', async () => {
   const blogs = await helper.blogsInDb()
