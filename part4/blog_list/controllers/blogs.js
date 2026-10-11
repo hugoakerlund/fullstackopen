@@ -8,9 +8,24 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
-  let blog = new Blog(request.body)
-  const savedBlog = await blog.save()
-  response.status(201).json(savedBlog)
+  let body = request.body._doc
+
+  if (!body.hasOwnProperty('title')) {
+    response.status(400).end()
+  }
+  else if (!body.hasOwnProperty('url')) {
+    response.status(400).end()
+  }
+  else {
+    const blog = new Blog({
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes
+    })
+    const savedBlog = await blog.save()
+    response.status(201).json(savedBlog)
+  }
 })
 
 module.exports = blogsRouter

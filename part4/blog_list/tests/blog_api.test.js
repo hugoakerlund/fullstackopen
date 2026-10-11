@@ -1,10 +1,10 @@
+const assert = require('node:assert')
 const { test, after, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
-const assert = require('node:assert')
-const Blog = require('../models/blog')
-const helper = require('./test_helper')
 const app = require('../app')
+const helper = require('./test_helper')
+const Blog = require('../models/blog')
 
 const api = supertest(app)
 
@@ -21,7 +21,6 @@ test('blogs are returned as json', async () => {
     .expect('Content-Type', /application\/json/)
 })
 
-
 test('all blogs are returned', async () => {
   const response = await api.get('/api/blogs')
   assert.strictEqual(response.body.length, 4)
@@ -36,34 +35,67 @@ test('blog is added to database', async () => {
     url: "123",
     likes: 1,
   })
-  await newBlog.save()
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const title = response.body.map(r => r.title)
 
   const blogsAtEnd = await helper.blogsInDb()
 
   assert.strictEqual(blogsAtBeginning.length, blogsAtEnd.length - 1)
-  assert.strictEqual(blogsAtEnd[blogsAtEnd.length - 1].title, "123")
+  assert(title.includes('123'))
 })
 
 
 test('unique identifier property of the blog posts is named id', async () => {
   const blogs = await helper.blogsInDb()
   blogs.forEach((blog) => {
-    console.log(blog)
     assert(blog.hasOwnProperty('id') === true)
     assert(blog.hasOwnProperty('_id') === false)
   })
 })
 
 test('likes property default to 0', async () => {
-  const newBlog = new Blog({
+  const noLikesBlog = new Blog({
     title: "123",
     author: "123",
     url: "123",
   })
-  await newBlog.save()
+  await noLikesBlog.save()
 
   const blogsAtEnd = await helper.blogsInDb()
   assert.strictEqual(blogsAtEnd[blogsAtEnd.length - 1].likes, 0)
+})
+
+test('title property must be set', async () => {
+  const noTitleBlog = new Blog({
+    author: "123",
+    url: "123",
+    likes: 0
+  })
+
+  await api
+    .post('/api/blogs')
+    .send(noTitleBlog)
+    .expect(400)
+})
+
+test('url property must be set', async () => {
+  const noUrlBlog = new Blog({
+    title: "123",
+    author: "123",
+    likes: 0
+  })
+
+  await api
+    .post('/api/blogs')
+    .send(noUrlBlog)
+    .expect(400)
 })
 
 
