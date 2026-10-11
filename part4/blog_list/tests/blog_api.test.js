@@ -27,6 +27,24 @@ test('all blogs are returned', async () => {
   assert.strictEqual(response.body.length, 4)
 })
 
+test('blog is added to database', async () => {
+  const blogsAtBeginning = await helper.blogsInDb()
+
+  const newBlog = new Blog({
+    title: "123",
+    author: "123",
+    url: "123",
+    likes: 1,
+  })
+  await newBlog.save()
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  assert.strictEqual(blogsAtBeginning.length, blogsAtEnd.length - 1)
+  assert.strictEqual(blogsAtEnd[blogsAtEnd.length - 1].title, "123")
+})
+
+
 test('unique identifier property of the blog posts is named id', async () => {
   const blogs = await helper.blogsInDb()
   blogs.forEach((blog) => {
