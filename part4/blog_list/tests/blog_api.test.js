@@ -48,9 +48,22 @@ test('blog is added to database', async () => {
 test('unique identifier property of the blog posts is named id', async () => {
   const blogs = await helper.blogsInDb()
   blogs.forEach((blog) => {
+    console.log(blog)
     assert(blog.hasOwnProperty('id') === true)
     assert(blog.hasOwnProperty('_id') === false)
   })
+})
+
+test('likes property default to 0', async () => {
+  const newBlog = new Blog({
+    title: "123",
+    author: "123",
+    url: "123",
+  })
+  await newBlog.save()
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd[blogsAtEnd.length - 1].likes, 0)
 })
 
 
