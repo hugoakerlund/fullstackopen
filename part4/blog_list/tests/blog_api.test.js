@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt')
 const assert = require('node:assert')
 const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
@@ -5,7 +6,6 @@ const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
-
 const api = supertest(app)
 
 
@@ -31,13 +31,15 @@ describe('blogs', () => {
 describe('blog', () => {
   test('is added to database', async () => {
     const blogsAtBeginning = await helper.blogsInDb()
+    const userId = await helper.getExistingUserId()
 
-    const newBlog = new Blog({
-      title: "123",
-      author: "123",
-      url: "123",
+    const newBlog = {
+      title: '123',
+      author: '123',
+      url: '123',
       likes: 1,
-    })
+      userId: userId,
+    }
 
     await api
       .post('/api/blogs')
@@ -75,40 +77,40 @@ describe('blog post information', () => {
   test('title is updated', async () => {
     const blogsAtBeginning = await helper.blogsInDb()
     let blogToChange = blogsAtBeginning[0]
-    blogToChange.title = "Changed"
+    blogToChange.title = 'Changed'
     await api
       .put(`/api/blogs/${blogToChange.id}`)
       .send(blogToChange)
       .expect(204)
     const blogsAtEnd = await helper.blogsInDb()
     const changedBlog = blogsAtEnd[0];
-    assert.strictEqual(changedBlog.title, "Changed")
+    assert.strictEqual(changedBlog.title, 'Changed')
   })
 
   test('author is updated', async () => {
     const blogsAtBeginning = await helper.blogsInDb()
     let blogToChange = blogsAtBeginning[0]
-    blogToChange.author = "changed author"
+    blogToChange.author = 'changed author'
     await api
       .put(`/api/blogs/${blogToChange.id}`)
       .send(blogToChange)
       .expect(204)
     const blogsAtEnd = await helper.blogsInDb()
     const changedBlog = blogsAtEnd[0];
-    assert.strictEqual(changedBlog.author, "changed author")
+    assert.strictEqual(changedBlog.author, 'changed author')
   })
 
   test('url is updated', async () => {
     const blogsAtBeginning = await helper.blogsInDb()
     let blogToChange = blogsAtBeginning[0]
-    blogToChange.url = "changed url"
+    blogToChange.url = 'changed url'
     await api
       .put(`/api/blogs/${blogToChange.id}`)
       .send(blogToChange)
       .expect(204)
     const blogsAtEnd = await helper.blogsInDb()
     const changedBlog = blogsAtEnd[0];
-    assert.strictEqual(changedBlog.url, "changed url")
+    assert.strictEqual(changedBlog.url, 'changed url')
   })
 
   test('likes are updated', async () => {
@@ -136,43 +138,65 @@ describe('blog property', () => {
   })
 
   test('likes default to 0', async () => {
-    const noLikesBlog = new Blog({
-      title: "123",
-      author: "123",
-      url: "123",
-    })
-    await noLikesBlog.save()
+    const userId = await helper.getExistingUserId()
+
+    const noLikesBlog = {
+      title: '123',
+      author: '123',
+      url: '123',
+      userId: userId
+    }
+
+    const result = await api
+      .post('/api/blogs')
+      .send(noLikesBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
     const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(result._body.title, '123')
     assert.strictEqual(blogsAtEnd[blogsAtEnd.length - 1].likes, 0)
   })
 
   test('title must be set', async () => {
-    const noTitleBlog = new Blog({
-      author: "123",
-      url: "123",
-      likes: 0
-    })
+    const userId = await helper.getExistingUserId()
 
-    await api
+    const noTitleBlog = {
+      author: '123',
+      url: '123',
+      likes: 0,
+      userId: userId
+    }
+
+    const result = await api
       .post('/api/blogs')
       .send(noTitleBlog)
       .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    assert(result.body.error.includes('title missing'))
   })
 
   test('url must be set', async () => {
-    const noUrlBlog = new Blog({
-      title: "123",
-      author: "123",
-      likes: 0
-    })
+    const userId = await helper.getExistingUserId()
 
-    await api
+    const noUrlBlog = {
+      title: '123',
+      author: '123',
+      likes: 0,
+      userId: userId
+    }
+
+    const result = await api
       .post('/api/blogs')
       .send(noUrlBlog)
       .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    assert(result.body.error.includes('url missing'))
   })
 })
+
 
 
 after(async () => {

@@ -3,20 +3,16 @@ const assert = require('node:assert')
 const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
-const User = require('../models/user')
 const app = require('../app')
 const helper = require('./test_helper')
-
+const User = require('../models/user')
 const api = supertest(app)
-
 
 describe('when there is initially one user in db', () => {
   beforeEach(async () => {
     await User.deleteMany({})
-
     const passwordHash = await bcrypt.hash('password', 10)
     const user = new User({ username: 'root', passwordHash })
-
     await user.save()
   })
 
@@ -103,7 +99,6 @@ describe('when there is initially one user in db', () => {
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })
 })
-
 
 after(async () => {
   await mongoose.connection.close()
