@@ -45,10 +45,8 @@ const getTokenFrom = request => {
 }
 
 const tokenExtractor = (request, response, next) => {
-  if (request.method === 'POST') {
-    let token = getTokenFrom(request)
-    request.token = token
-  }
+  let token = getTokenFrom(request)
+  request.token = token
 
   next()
 }
