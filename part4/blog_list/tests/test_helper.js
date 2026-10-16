@@ -49,7 +49,8 @@ const nonExistingId = async () => {
   return blog._id.toString()
 }
 
-const getExistingUserId = async () => {
+
+const getRootUserId = async () => {
   const users = await User.find({})
   return users[0].id
 }
@@ -67,7 +68,7 @@ const usersInDb = async () => {
 module.exports = {
   initialBlogs,
   nonExistingId,
-  getExistingUserId,
+  getRootUserId,
   blogsInDb,
-  usersInDb,
+  usersInDb
 }
