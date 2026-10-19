@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -8,6 +9,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notification, setNotification] = useState({ message: null, error: false })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -42,9 +44,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch {
-      setErrorMessage('wrong credentials')
+      setNotification({ message: 'wrong username or password', error: true })
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotification({ message: null, error: false })
       }, 5000)
     }
   }
@@ -61,9 +63,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch {
-      setErrorMessage('error logging out')
+      setNotification({ message: 'error logging out', error: false })
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotification({ message: null, error: false })
       }, 5000)
     }
   }
@@ -80,11 +82,16 @@ const App = () => {
     setTitle('')
     setAuthor('')
     setUrl('')
+    setNotification({ message: `a new blog ${title} by ${author} added`, error: false })
+    setTimeout(() => {
+      setNotification({ message: null, error: false })
+    }, 5000)
   }
 
   const loginForm = () => (
     <div>
       <h2>log in to application</h2>
+      <Notification message={notification.message} error={notification.error} />
       <form onSubmit={handleLogin}>
         <div>
           <label>
@@ -129,6 +136,7 @@ const App = () => {
       {user && (
         <div>
           <h2>blogs</h2>
+          <Notification message={notification.message} error={notification.error} />
           <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
 
           {blogForm()}
