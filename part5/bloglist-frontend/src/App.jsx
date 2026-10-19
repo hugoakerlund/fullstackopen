@@ -1,8 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,6 +17,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -70,8 +76,29 @@ const App = () => {
     }
   }
 
+  const handleUsernameChange = async event => {
+    setUsername(event.target.value)
+  }
+
+  const handlePasswordChange = async event => {
+    setPassword(event.target.value)
+  }
+
+  const handleTitleChange = async event => {
+    setTitle(event.target.value)
+  }
+
+  const handleAuthorChange = async event => {
+    setAuthor(event.target.value)
+  }
+
+  const handleUrlChange = async event => {
+    setUrl(event.target.value)
+  }
+
   const addBlog = async event => {
     event.preventDefault()
+    blogFormRef.current.toggleVisibility()
     const blogObject = {
       title: title,
       author: author,
@@ -88,63 +115,47 @@ const App = () => {
     }, 5000)
   }
 
-  const loginForm = () => (
-    <div>
-      <h2>log in to application</h2>
-      <Notification message={notification.message} error={notification.error} />
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>
-            username
-            <input
-              type="text"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            password
-            <input
-              type="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </label>
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </div>
-  )
-
   const blogForm = () => (
-    <div>
-      <h2>create new</h2>
-      <form onSubmit={addBlog}>
-        title:<input value={title} onChange={({ target }) => setTitle(target.value)} /><br/>
-        author:<input value={author} onChange={({ target }) => setAuthor(target.value)} /><br/>
-        url:<input value={url} onChange={({ target }) => setUrl(target.value)} /><br/>
-        <button type="submit">create</button>
-      </form>
-    </div>
+    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+      <BlogForm
+        addBlog={addBlog}
+        handleTitleChange={handleTitleChange}
+        handleAuthorChange={handleAuthorChange}
+        handleUrlChange={handleUrlChange}
+        title={title}
+        author={author}
+        url={url}
+      />
+    </Togglable>
   )
 
   return (
     <div>
-      {!user && loginForm()}
-      {user && (
-        <div>
-          <h2>blogs</h2>
-          <Notification message={notification.message} error={notification.error} />
-          <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
+    {!user && (
+      <div>
+      {LoginForm({
+        handleLogin,
+        handleUsernameChange,
+        handlePasswordChange,
+        username,
+        password,
+        notification
+      })}
+      </div>
+    )}
 
-          {blogForm()}
+    {user && (
+      <div>
+        <h2>blogs</h2>
+        <Notification message={notification.message} error={notification.error} />
+        <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
 
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
-          )}
-        </div>
+        {blogForm()}
+
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} />
+        )}
+      </div>
       )}
     </div>
   )
