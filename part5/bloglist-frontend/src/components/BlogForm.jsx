@@ -1,21 +1,76 @@
-const BlogForm = ({
-  addBlog,
-  handleTitleChange,
-  handleAuthorChange,
-  handleUrlChange,
-  title,
-  author,
-  url
-}) => (
+import { useState, useEffect, useRef } from 'react'
+import blogService from '../services/blogs'
+import Blog from '../components/Blog'
+import Togglable from '../components/Togglable'
+
+
+const BlogForm = ({ setNotification }) => {
+  const [blogs, setBlogs] = useState([])
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const blogFormRef = useRef()
+
+  useEffect(() => {
+    blogService.getAll().then(blogs =>
+      setBlogs( blogs )
+    )
+  }, [])
+
+
+  const handleTitleChange = async event => {
+    setTitle(event.target.value)
+  }
+
+  const handleAuthorChange = async event => {
+    setAuthor(event.target.value)
+  }
+
+  const handleUrlChange = async event => {
+    setUrl(event.target.value)
+  }
+
+  const addBlog = async event => {
+    event.preventDefault()
+    blogFormRef.current.toggleVisibility()
+    const blogObject = {
+      title: title,
+      author: author,
+      url: url,
+    }
+    const returnedBlog = await blogService.create(blogObject)
+    setBlogs(blogs.concat(returnedBlog))
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+    setNotification({ message: `a new blog ${title} by ${author} added`, error: false })
+    setTimeout(() => {
+      setNotification({ message: null, error: false })
+    }, 5000)
+  }
+
+
+  return (
   <div>
-    <h2>create new</h2>
-    <form onSubmit={addBlog}>
-      title:<input value={title} onChange={handleTitleChange} /><br/>
-      author:<input value={author} onChange={handleAuthorChange} /><br/>
-      url:<input value={url} onChange={handleUrlChange} /><br/>
-      <button type="submit">create</button>
-    </form>
+    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+      <div>
+        <h2>create new</h2>
+        <form onSubmit={addBlog}>
+          title:<input value={title} onChange={handleTitleChange} /><br/>
+          author:<input value={author} onChange={handleAuthorChange} /><br/>
+          url:<input value={url} onChange={handleUrlChange} /><br/>
+          <button type="submit">create</button>
+        </form>
+      </div>
+    </Togglable>
+    <div>
+      {blogs.map(blog =>
+        <Blog key={blog.id} blog={blog} />
+      )}
+    </div>
   </div>
-)
+  )
+}
 
 export default BlogForm
