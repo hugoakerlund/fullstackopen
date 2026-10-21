@@ -13,9 +13,10 @@ const BlogForm = ({ setNotification }) => {
   const blogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+    blogService.getAll().then(blogs => {
+      blogs.sort((a,b) => parseFloat(b.likes) -  parseFloat(a.likes))
+      setBlogs(blogs)
+    })
   }, [])
 
 
