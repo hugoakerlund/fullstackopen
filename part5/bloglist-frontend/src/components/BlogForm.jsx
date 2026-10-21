@@ -4,7 +4,7 @@ import Blog from '../components/Blog'
 import Togglable from '../components/Togglable'
 
 
-const BlogForm = ({ setNotification }) => {
+const BlogForm = ({ setNotification, user}) => {
   const [blogs, setBlogs] = useState([])
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -35,11 +35,15 @@ const BlogForm = ({ setNotification }) => {
   const addBlog = async event => {
     event.preventDefault()
     blogFormRef.current.toggleVisibility()
+
     const blogObject = {
       title: title,
       author: author,
       url: url,
+      user: user
     }
+
+
     const returnedBlog = await blogService.create(blogObject)
     setBlogs(blogs.concat(returnedBlog))
     setTitle('')
@@ -49,6 +53,18 @@ const BlogForm = ({ setNotification }) => {
     setTimeout(() => {
       setNotification({ message: null, error: false })
     }, 5000)
+  }
+
+  const deleteBlog = async (blog) => {
+    const confirmation = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+    if (confirmation) {
+      let response = await blogService.remove(blog)
+      setBlogs(blogs.filter(b => b.id != blog.id))
+      setNotification({ message: `blog ${blog.title} by ${blog.author} deleted`, error: false })
+      setTimeout(() => {
+        setNotification({ message: null, error: false })
+      }, 5000)
+    }
   }
 
 
@@ -67,7 +83,7 @@ const BlogForm = ({ setNotification }) => {
     </Togglable>
     <div>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} username={user.name} />
       )}
     </div>
   </div>

@@ -90,7 +90,7 @@ const App = () => {
         <h2>blogs</h2>
         <Notification message={notification.message} error={notification.error} />
         <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
-        <BlogForm setNotification={setNotification} />
+        <BlogForm setNotification={setNotification} user={user} />
       </div>
       )}
     </div>
