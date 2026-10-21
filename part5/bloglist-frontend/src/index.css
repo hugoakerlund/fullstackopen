@@ -17,3 +17,10 @@
   padding: 10px;
   margin-bottom: 10px;
 }
+
+.blogList {
+  padding: 20px 20px 20px 20px;
+  border-style: solid;
+  border-width: 2px;
+  margin: 10px 10px;
+}
