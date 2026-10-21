@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import loginService from './services/login'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
@@ -37,7 +37,7 @@ const App = () => {
       const user = await loginService.login({ username, password })
 
       window.localStorage.setItem(
-            'loggedBlogappUser', JSON.stringify(user)
+        'loggedBlogappUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
       setUser(user)
@@ -72,26 +72,25 @@ const App = () => {
 
   return (
     <div>
-    {!user && (
-      <div>
-      {LoginForm({
-        handleLogin,
-        handleUsernameChange,
-        handlePasswordChange,
-        username,
-        password,
-        notification
-      })}
-      </div>
-    )}
-
-    {user && (
-      <div>
-        <h2>blogs</h2>
-        <Notification message={notification.message} error={notification.error} />
-        <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
-        <BlogForm setNotification={setNotification} user={user} />
-      </div>
+      {!user && (
+        <div>
+          {LoginForm({
+            handleLogin,
+            handleUsernameChange,
+            handlePasswordChange,
+            username,
+            password,
+            notification
+          })}
+        </div>
+      )}
+      {user && (
+        <div>
+          <h2>blogs</h2>
+          <Notification message={notification.message} error={notification.error} />
+          <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
+          <BlogForm setNotification={setNotification} user={user} />
+        </div>
       )}
     </div>
   )

@@ -38,7 +38,7 @@ const remove = async blog => {
     data: {
       source: blog
     }
-  });
+  })
   return response.data
 }
 

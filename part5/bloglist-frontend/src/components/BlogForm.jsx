@@ -4,11 +4,12 @@ import Blog from '../components/Blog'
 import Togglable from '../components/Togglable'
 
 
-const BlogForm = ({ setNotification, user}) => {
+const BlogForm = ({ setNotification, user }) => {
   const [blogs, setBlogs] = useState([])
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [_, setLikes] = useState(0)
 
   const blogFormRef = useRef()
 
@@ -58,8 +59,8 @@ const BlogForm = ({ setNotification, user}) => {
   const deleteBlog = async (blog) => {
     const confirmation = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
     if (confirmation) {
-      let response = await blogService.remove(blog)
-      setBlogs(blogs.filter(b => b.id != blog.id))
+      await blogService.remove(blog)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
       setNotification({ message: `blog ${blog.title} by ${blog.author} deleted`, error: false })
       setTimeout(() => {
         setNotification({ message: null, error: false })
@@ -67,26 +68,32 @@ const BlogForm = ({ setNotification, user}) => {
     }
   }
 
+  const likeBlog = async (blog) => {
+    blog.likes += 1
+    setLikes(blog.likes)
+    await blogService.update(blog)
+  }
+
 
   return (
-  <div>
-    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-      <div>
-        <h2>create new</h2>
-        <form onSubmit={addBlog}>
-          title:<input value={title} onChange={handleTitleChange} /><br/>
-          author:<input value={author} onChange={handleAuthorChange} /><br/>
-          url:<input value={url} onChange={handleUrlChange} /><br/>
-          <button type="submit">create</button>
-        </form>
-      </div>
-    </Togglable>
     <div>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} username={user.name} />
-      )}
+      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+        <div>
+          <h2>create new</h2>
+          <form onSubmit={addBlog}>
+            title:<input value={title} onChange={handleTitleChange} /><br/>
+            author:<input value={author} onChange={handleAuthorChange} /><br/>
+            url:<input value={url} onChange={handleUrlChange} /><br/>
+            <button type="submit">create</button>
+          </form>
+        </div>
+      </Togglable>
+      <div>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} likeBlog={likeBlog} username={user.name} />
+        )}
+      </div>
     </div>
-  </div>
   )
 }
 

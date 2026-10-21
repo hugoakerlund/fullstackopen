@@ -1,32 +1,26 @@
 import { useState } from 'react'
-import blogService from '../services/blogs'
 
-const Blog = ({ blog, deleteBlog, username }) => {
+const Blog = ({ blog, deleteBlog, likeBlog, username }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
-
-  const likeBlog = async event => {
-    blog.likes += 1
-    setLikes(blog.likes)
-    await blogService.update(blog)
-  }
 
   return (
-  <div className='blogList'>
-    <div>
-      {blog.title} {blog.author} <button onClick={() => setDetailsVisible(!detailsVisible)}>{detailsVisible === true ? 'hide' : 'view'}</button>
+    <div className='blogList'>
+      <div>
+        {blog.title} {blog.author} <button onClick={() => setDetailsVisible(!detailsVisible)}>{detailsVisible === true ? 'hide' : 'view'}</button>
+      </div>
+      {detailsVisible && (
+        <div>
+          {blog.url}<br/>
+          likes {blog.likes}<button onClick={() => likeBlog(blog)}>like</button><br/>
+          {blog.user.name}<br/>
+          {username === blog.user.name && (
+            <button onClick={() => deleteBlog(blog)}>remove</button>
+          )}
+        </div>
+      )
+      }
     </div>
-    {detailsVisible && (
-    <div>
-      {blog.url}<br/>
-      likes {blog.likes}<button onClick={likeBlog}>like</button><br/>
-      {blog.user.name}<br/>
-      {username === blog.user.name && (
-      <button onClick={() => deleteBlog(blog)}>remove</button>
-      )}
-    </div>
-    )}
-  </div>
-)}
+  )
+}
 
 export default Blog
