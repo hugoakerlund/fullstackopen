@@ -10,8 +10,12 @@ const Blog = ({ blog, deleteBlog, likeBlog, username }) => {
       </div>
       {detailsVisible && (
         <div className='blogDetails'>
-          {blog.url}<br/>
-          likes {blog.likes}<button onClick={() => likeBlog(blog)}>like</button><br/>
+          <div id='blogUrl'>
+            {blog.url}<br/>
+          </div>
+          <div id='blogLikes'>
+            likes {blog.likes}<button onClick={() => likeBlog(blog)}>like</button><br/>
+          </div>
           {blog.user.name}<br/>
           {username === blog.user.name && (
             <button onClick={() => deleteBlog(blog)}>remove</button>
