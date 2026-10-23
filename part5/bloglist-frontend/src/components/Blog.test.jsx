@@ -19,8 +19,6 @@ describe('<Blog />', () => {
     const likeBlog = vi.fn()
     const username = blogUser.name
 
-    const testUser = userEvent.setup()
-
     render(<Blog blog={blog} deleteBlog={deleteBlog} likeBlog={likeBlog} username={username} />)
 
     const header = screen.getByText('blog title blog author')
