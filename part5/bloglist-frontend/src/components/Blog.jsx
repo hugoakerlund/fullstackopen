@@ -4,12 +4,12 @@ const Blog = ({ blog, deleteBlog, likeBlog, username }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
 
   return (
-    <div className='blogList'>
-      <div>
+    <div className='blog'>
+      <div className='blogHeader'>
         {blog.title} {blog.author} <button onClick={() => setDetailsVisible(!detailsVisible)}>{detailsVisible === true ? 'hide' : 'view'}</button>
       </div>
       {detailsVisible && (
-        <div>
+        <div className='blogDetails'>
           {blog.url}<br/>
           likes {blog.likes}<button onClick={() => likeBlog(blog)}>like</button><br/>
           {blog.user.name}<br/>

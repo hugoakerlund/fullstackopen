@@ -81,9 +81,15 @@ const BlogForm = ({ setNotification, user }) => {
         <div>
           <h2>create new</h2>
           <form onSubmit={addBlog}>
-            title:<input value={title} onChange={handleTitleChange} /><br/>
-            author:<input value={author} onChange={handleAuthorChange} /><br/>
-            url:<input value={url} onChange={handleUrlChange} /><br/>
+              <label>
+                title:<input value={title} onChange={handleTitleChange} /><br/>
+              </label>
+              <label>
+                author:<input value={author} onChange={handleAuthorChange} /><br/>
+              </label>
+              <label>
+                url:<input value={url} onChange={handleUrlChange} /><br/>
+              </label>
             <button type="submit">create</button>
           </form>
         </div>
