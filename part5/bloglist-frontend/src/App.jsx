@@ -1,10 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
 import loginService from './services/login'
 import blogService from './services/blogs'
+
+import {
+  BrowserRouter as Router,
+  Routes, Route, Link
+} from 'react-router-dom'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
-import Blog from './components/Blog'
+import BlogList from './components/BlogList'
+import LogoutButton from './components/LogoutButton'
 
 
 const App = () => {
@@ -78,7 +84,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch {
-      setNotification({ message: 'error logging out', error: false })
+      setNotification({ message: 'error logging out', error: true })
       setTimeout(() => {
         setNotification({ message: null, error: false })
       }, 5000)
@@ -111,30 +117,28 @@ const App = () => {
   }
 
   return (
-    <div>
-    {!user && (
+    <Router>
       <div>
-      <LoginForm handleLogin={handleLogin} handleUsernameChange={handleUsernameChange}
-      handlePasswordChange={handlePasswordChange} username={username}
-      password={password} notification={notification} />
+        <Notification message={notification.message} error={notification.error} />
+        <Link to="/">blogs</Link>
+        {user && (
+          <LogoutButton onLogout={handleLogout} />
+        )}
+        {!user && (
+          <Link to="/login">login</Link>
+        )}
       </div>
-    )}
-    {user && (
-      <div>
-      <div>
-      <h2>blogs</h2>
-      <Notification message={notification.message} error={notification.error} />
-      <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
-      <BlogForm createBlog={addBlog} setNotification={setNotification} user={user} blogFormRef={blogFormRef} />
-      </div>
-      <div>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} likeBlog={likeBlog} username={user.name} />
-      )}
-      </div>
-      </div>
-    )}
-    </div>
+
+      <Routes>
+        <Route path="/" element={
+         <BlogList blogs={blogs} deleteBlog={deleteBlog} likeBlog={likeBlog} user={user} />
+        } />
+        <Route path="/login" element={
+          <LoginForm onLogin={handleLogin} handleUsernameChange={handleUsernameChange} handlePasswordChange={handlePasswordChange}
+          username={username} password={password} notification={notification} />
+         } />
+      </Routes>
+    </Router>
   )
 }
 
