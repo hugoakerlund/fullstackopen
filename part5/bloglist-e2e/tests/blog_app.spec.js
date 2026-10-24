@@ -37,4 +37,21 @@ describe('Blog app', () => {
     })
   })
 
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await page.getByRole('textbox').first().fill('test')
+      await page.getByRole('textbox').last().fill('password')
+      await page.getByRole('button', { name: 'login' }).click()
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+      await page.getByRole('button', { name: 'create new blog' }).click()
+      const textboxes = await page.getByRole('textbox').all()
+      await textboxes[0].fill("new blog title")
+      await textboxes[1].fill("new blog author")
+      await textboxes[2].fill("new blog url")
+      await page.getByRole('button', { name: 'create' }).click()
+      await expect(page.getByText('new blog title')).toBeVisible()
+    })
+  })
 })
