@@ -13,15 +13,18 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [_, setLikes] = useState(0)
 
   const blogFormRef = useRef()
 
-  useEffect(() => {
+  const updateBlogs = () => {
     blogService.getAll().then(blogs => {
       blogs.sort((a,b) => parseFloat(b.likes) -  parseFloat(a.likes))
       setBlogs(blogs)
     })
+  }
+
+  useEffect(() => {
+    updateBlogs()
   }, [])
 
   useEffect(() => {
@@ -103,34 +106,34 @@ const App = () => {
 
   const likeBlog = async (blog) => {
     blog.likes += 1
-    setLikes(blog.likes)
     await blogService.update(blog)
+    updateBlogs()
   }
 
   return (
     <div>
-      {!user && (
-        <div>
-          <LoginForm handleLogin={handleLogin} handleUsernameChange={handleUsernameChange}
-            handlePasswordChange={handlePasswordChange} username={username}
-            password={password} notification={notification} />
-        </div>
+    {!user && (
+      <div>
+      <LoginForm handleLogin={handleLogin} handleUsernameChange={handleUsernameChange}
+      handlePasswordChange={handlePasswordChange} username={username}
+      password={password} notification={notification} />
+      </div>
+    )}
+    {user && (
+      <div>
+      <div>
+      <h2>blogs</h2>
+      <Notification message={notification.message} error={notification.error} />
+      <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
+      <BlogForm createBlog={addBlog} setNotification={setNotification} user={user} blogFormRef={blogFormRef} />
+      </div>
+      <div>
+      {blogs.map(blog =>
+        <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} likeBlog={likeBlog} username={user.name} />
       )}
-      {user && (
-        <div>
-          <div>
-            <h2>blogs</h2>
-            <Notification message={notification.message} error={notification.error} />
-            <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
-            <BlogForm createBlog={addBlog} setNotification={setNotification} user={user} blogFormRef={blogFormRef} />
-          </div>
-          <div>
-            {blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} likeBlog={likeBlog} username={user.name} />
-            )}
-          </div>
-        </div>
-      )}
+      </div>
+      </div>
+    )}
     </div>
   )
 }
