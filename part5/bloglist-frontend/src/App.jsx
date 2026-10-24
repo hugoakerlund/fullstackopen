@@ -118,17 +118,19 @@ const App = () => {
       )}
       {user && (
         <div>
-          <h2>blogs</h2>
-          <Notification message={notification.message} error={notification.error} />
-          <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
-          <BlogForm createBlog={addBlog} setNotification={setNotification} user={user} blogFormRef={blogFormRef} />
+          <div>
+            <h2>blogs</h2>
+            <Notification message={notification.message} error={notification.error} />
+            <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
+            <BlogForm createBlog={addBlog} setNotification={setNotification} user={user} blogFormRef={blogFormRef} />
+          </div>
+          <div>
+            {blogs.map(blog =>
+              <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} likeBlog={likeBlog} username={user.name} />
+            )}
+          </div>
         </div>
       )}
-      <div>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} likeBlog={likeBlog} username={user.name} />
-        )}
-      </div>
     </div>
   )
 }

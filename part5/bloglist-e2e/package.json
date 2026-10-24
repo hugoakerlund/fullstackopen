@@ -1,0 +1,17 @@
+{
+  "name": "part5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.5"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:report": "playwright show-report"
+  }
+}
