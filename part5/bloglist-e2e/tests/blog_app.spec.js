@@ -10,6 +10,13 @@ describe('Blog app', () => {
         password: 'password'
       }
     })
+    await request.post('http://localhost:3001/api/users', {
+      data: {
+        name: 'Test2',
+        username: 'test2',
+        password: 'password'
+      }
+    })
     await page.goto('http://localhost:5173')
   })
 
@@ -76,6 +83,32 @@ describe('Blog app', () => {
         await page.getByRole('button', { name: 'remove' }).click()
         await expect(page.getByText('blog new blog title by new blog author deleted')).toBeVisible()
       })
+    })
+  })
+
+  describe('When there is a blog created by another user', () => {
+    beforeEach(async ({ page }) => {
+      await page.getByRole('textbox').first().fill('test')
+      await page.getByRole('textbox').last().fill('password')
+      await page.getByRole('button', { name: 'login' }).click()
+      await page.getByRole('button', { name: 'create new blog' }).click()
+      const textboxes = await page.getByRole('textbox').all()
+      await textboxes[0].fill("new blog title")
+      await textboxes[1].fill("new blog author")
+      await textboxes[2].fill("new blog url")
+      await page.getByRole('button', { name: 'create' }).click()
+    })
+
+    test('only the user who created the blog can see the remove button', async ({ page }) => {
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByText('remove')).toBeVisible()
+      await page.getByRole('button', { name: 'logout' }).click()
+
+      await page.getByRole('textbox').first().fill('test2')
+      await page.getByRole('textbox').last().fill('password')
+      await page.getByRole('button', { name: 'login' }).click()
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByText('remove')).not.toBeVisible()
     })
   })
 })
