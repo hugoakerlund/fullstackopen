@@ -6,6 +6,10 @@ const Blog = ({ blogs, removeBlog, likeBlog, user }) => {
   const blog = blogs.find(b => b.id === id)
   const navigate = useNavigate()
 
+  if (!blog) {
+    return null
+  }
+
   const deleteBlog = async (blog) => {
     if (await removeBlog(blog)) {
       navigate('/')
@@ -23,7 +27,7 @@ const Blog = ({ blogs, removeBlog, likeBlog, user }) => {
         </div>
         <div id='blogLikes'>
           likes {blog.likes}
-          {user && user.name === blog.user.name && (
+          {user && (
             <button onClick={() => likeBlog(blog)}>like</button>
           )}
         </div>
