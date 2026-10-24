@@ -11,6 +11,7 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
 import LogoutButton from './components/LogoutButton'
+import Blog from './components/Blog'
 
 
 const App = () => {
@@ -136,6 +137,9 @@ const App = () => {
         <Route path="/login" element={
           <LoginForm onLogin={handleLogin} handleUsernameChange={handleUsernameChange} handlePasswordChange={handlePasswordChange}
           username={username} password={password} notification={notification} />
+         } />
+        <Route path="/:id" element={
+          <Blog blogs={blogs} deleteBlog={deleteBlog} likeBlog={likeBlog} user={user} />
          } />
       </Routes>
     </Router>

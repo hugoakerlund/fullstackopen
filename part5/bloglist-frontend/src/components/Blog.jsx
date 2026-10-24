@@ -1,28 +1,30 @@
-import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
-const Blog = ({ blog, deleteBlog, likeBlog, user }) => {
-  const [detailsVisible, setDetailsVisible] = useState(false)
+const Blog = ({ blogs, deleteBlog, likeBlog, user }) => {
+
+  const id = useParams().id
+  const blog = blogs.find(b => b.id === id)
 
   return (
     <div className='blog'>
       <div className='blogHeader'>
-        {blog.title} {blog.author} <button onClick={() => setDetailsVisible(!detailsVisible)}>{detailsVisible === true ? 'hide' : 'view'}</button>
+        {blog.author}: {blog.title}
       </div>
-      {detailsVisible && (
-        <div className='blogDetails'>
-          <div id='blogUrl'>
-            {blog.url}<br/>
-          </div>
-          <div id='blogLikes'>
-            likes {blog.likes}<button onClick={() => likeBlog(blog)}>like</button><br/>
-          </div>
-          {blog.user.name}<br/>
-          { user && user.name === blog.user.name && (
-            <button onClick={() => deleteBlog(blog)}>remove</button>
+      <div className='blogDetails'>
+        <div id='blogUrl'>
+          <a hfef={blog.url}>{blog.url}</a><br/>
+        </div>
+        <div id='blogLikes'>
+          likes {blog.likes}
+          {user && user.name === blog.user.name && (
+            <button onClick={() => likeBlog(blog)}>like</button>
           )}
         </div>
-      )
-      }
+        Added By {blog.user.name}<br/>
+        {user && user.name === blog.user.name && (
+          <button onClick={() => deleteBlog(blog)}>remove</button>
+        )}
+      </div>
     </div>
   )
 }

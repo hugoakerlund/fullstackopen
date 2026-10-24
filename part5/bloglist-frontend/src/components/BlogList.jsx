@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Blog from './Blog'
+import { Link } from 'react-router-dom'
 
 const BlogList = ({ blogs, deleteBlog, likeBlog, user }) => {
   return (
@@ -8,9 +8,13 @@ const BlogList = ({ blogs, deleteBlog, likeBlog, user }) => {
         <h2>blogs</h2>
       </div>
       <div>
+      <ul>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} likeBlog={likeBlog} user={user} />
+          <li key={blog.id}>
+            <Link to={`/${blog.id}`}>{blog.title}</Link>
+          </li>
         )}
+      </ul>
       </div>
     </div>
   )

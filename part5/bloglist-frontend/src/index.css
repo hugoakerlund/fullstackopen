@@ -25,6 +25,21 @@
   margin: 10px 10px;
 }
 
+.blogHeader {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.blogDetails a {
+  padding: 0px;
+  color: blue;
+  text-decoration: underline;
+  cursor: auto;
+}
+
 a {
   padding: 5px;
 }
