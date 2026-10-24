@@ -1,9 +1,16 @@
-import { useParams } from 'react-router-dom'
+import { useParams,  useNavigate } from 'react-router-dom'
 
-const Blog = ({ blogs, deleteBlog, likeBlog, user }) => {
+const Blog = ({ blogs, removeBlog, likeBlog, user }) => {
 
   const id = useParams().id
   const blog = blogs.find(b => b.id === id)
+  const navigate = useNavigate()
+
+  const deleteBlog = async (blog) => {
+    if (await removeBlog(blog)) {
+      navigate('/')
+    }
+  }
 
   return (
     <div className='blog'>

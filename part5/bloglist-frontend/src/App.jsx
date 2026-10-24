@@ -21,8 +21,6 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  const blogFormRef = useRef()
-
   const updateBlogs = () => {
     blogService.getAll().then(blogs => {
       blogs.sort((a,b) => parseFloat(b.likes) -  parseFloat(a.likes))
@@ -70,7 +68,9 @@ const App = () => {
       setTimeout(() => {
         setNotification({ message: null, error: false })
       }, 5000)
+      return false
     }
+    return true
   }
 
   const handleLogout = async event => {
@@ -93,7 +93,6 @@ const App = () => {
   }
 
   const addBlog = async (blog) => {
-    blogFormRef.current.toggleVisibility()
     blog.user = user
     const returnedBlog = await blogService.create(blog)
     setBlogs(blogs.concat(returnedBlog))
@@ -108,7 +107,9 @@ const App = () => {
       setTimeout(() => {
         setNotification({ message: null, error: false })
       }, 5000)
+      return true
     }
+    return false
   }
 
   const likeBlog = async (blog) => {
@@ -120,26 +121,32 @@ const App = () => {
   return (
     <Router>
       <div>
-        <Notification message={notification.message} error={notification.error} />
         <Link to="/">blogs</Link>
         {user && (
-          <LogoutButton onLogout={handleLogout} />
+          <span>
+            <Link to="/create">new blog</Link>
+            <LogoutButton onLogout={handleLogout} />
+          </span>
         )}
         {!user && (
           <Link to="/login">login</Link>
         )}
+        <Notification message={notification.message} error={notification.error} />
       </div>
 
       <Routes>
         <Route path="/" element={
-         <BlogList blogs={blogs} deleteBlog={deleteBlog} likeBlog={likeBlog} user={user} />
+         <BlogList blogs={blogs} />
+        } />
+        <Route path="/create" element={
+          <BlogForm createBlog={addBlog} setNotification={setNotification} />
         } />
         <Route path="/login" element={
-          <LoginForm onLogin={handleLogin} handleUsernameChange={handleUsernameChange} handlePasswordChange={handlePasswordChange}
-          username={username} password={password} notification={notification} />
+          <LoginForm onLogin={handleLogin} handleUsernameChange={handleUsernameChange}
+          handlePasswordChange={handlePasswordChange} username={username} password={password} />
          } />
         <Route path="/:id" element={
-          <Blog blogs={blogs} deleteBlog={deleteBlog} likeBlog={likeBlog} user={user} />
+          <Blog blogs={blogs} removeBlog={deleteBlog} likeBlog={likeBlog} user={user} />
          } />
       </Routes>
     </Router>

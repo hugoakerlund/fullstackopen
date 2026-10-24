@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const BlogList = ({ blogs, deleteBlog, likeBlog, user }) => {
+const BlogList = ({ blogs }) => {
   return (
     <div>
       <div>

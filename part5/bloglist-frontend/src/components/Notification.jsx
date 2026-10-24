@@ -5,15 +5,19 @@ const Notification = ({ message, error }) => {
 
   if (error) {
     return (
-      <div className="error">
-        {message}
+      <div className="notification">
+        <div className="error">
+          {message}
+        </div>
       </div>
     )
   }
 
   return (
     <div className="notification">
-      {message}
+      <div className="success">
+        {message}
+      </div>
     </div>
   )
 }

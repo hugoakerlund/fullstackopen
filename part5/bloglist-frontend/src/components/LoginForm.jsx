@@ -1,18 +1,17 @@
-import Notification from '../components/Notification'
 import { useNavigate } from 'react-router-dom'
 
-const LoginForm = ({ onLogin, handleUsernameChange, handlePasswordChange, username, password, notification }) => {
+const LoginForm = ({ onLogin, handleUsernameChange, handlePasswordChange, username, password }) => {
   const navigate = useNavigate()
 
   const handleLogin = async event => {
-    await onLogin(event)
-    navigate('/')
+    if(await onLogin(event)) {
+      navigate('/')
+    }
   }
 
   return (
     <div>
       <h2>log in to application</h2>
-      <Notification message={notification.message} error={notification.error} />
       <form onSubmit={handleLogin}>
         <div>
           <label>
