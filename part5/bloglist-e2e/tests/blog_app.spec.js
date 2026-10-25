@@ -16,7 +16,7 @@ describe('Blog app', () => {
 
   test('Login form is shown', async ({ page }) => {
     await page.goto('http://localhost:5173/login')
-    await expect(page.getByText('log in to application')).toBeVisible()
+    await expect(page.getByText('Log in to application')).toBeVisible()
     await expect(page.getByText('username')).toBeVisible()
     await expect(page.getByText('password')).toBeVisible()
   })
@@ -25,7 +25,7 @@ describe('Blog app', () => {
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
       await loginWith(page, 'test', 'password')
-      await expect(page.getByText('log in to application')).not.toBeVisible()
+      await expect(page.getByText('Log in to application')).not.toBeVisible()
       await expect(page.getByText('login')).not.toBeVisible()
       await expect(page.getByText('new blog')).toBeVisible()
     })

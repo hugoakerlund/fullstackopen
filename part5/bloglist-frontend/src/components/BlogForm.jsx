@@ -1,6 +1,31 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import styled from 'styled-components'
+
+const Input = styled.input`
+  padding: 1em;
+  margin: 0.5em;
+  color: "#0E183D";
+  background: #FFFFFF;
+  border: 2px solid cyan;
+`
+
+const Button = styled.button`
+  background-color: #000000;
+  border: 2px solid #1A1A1A;
+  border-radius: 15px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+  min-height: 20px;
+  padding: 8px 12px;
+  text-align: center;
+`
+
 const BlogForm = ({ createBlog, setNotification }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -46,15 +71,15 @@ const BlogForm = ({ createBlog, setNotification }) => {
       <h2>create new</h2>
       <form onSubmit={addBlog}>
         <label>
-          title:<input value={title} onChange={handleTitleChange} /><br/>
+          <Input value={title} onChange={handleTitleChange} placeholder="title" /><br/>
         </label>
         <label>
-          author:<input value={author} onChange={handleAuthorChange} /><br/>
+          <Input value={author} onChange={handleAuthorChange} placeholder="author" /><br/>
         </label>
         <label>
-          url:<input value={url} onChange={handleUrlChange} /><br/>
+          <Input value={url} onChange={handleUrlChange} placeholder="url" /><br/>
         </label>
-        <button type="submit">create</button>
+        <Button type="submit">create</Button>
       </form>
     </div>
   )
