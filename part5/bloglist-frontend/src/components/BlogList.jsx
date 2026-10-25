@@ -11,7 +11,7 @@ const BlogList = ({ blogs }) => {
       <ul>
         {blogs.map(blog =>
           <li key={blog.id}>
-            <Link to={`/${blog.id}`}>{blog.title}</Link>
+            <Link to={`/${blog.id}`} data-testid="blog-link">{blog.title}</Link>
           </li>
         )}
       </ul>
