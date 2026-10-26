@@ -1,18 +1,16 @@
-.notification {
-  background: lightgrey;
-  font-size: 20px;
-  border-style: solid;
-  border-radius: 5px;
-  margin: 10px;
-  padding: 15px;
+body {
+  background: #1b1b1b;
+  color: brown;
+  margin: auto;
+  font-family: "serif", "Georgia", "Garamond";
+  line-height: 1.6;
 }
 
-.success {
-  color: green;
-}
-
-.error {
-  color: red;
+a {
+  color: grey;
+  font-family: "monospace";
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .blog {
@@ -32,11 +30,6 @@
 
 .blogDetails a {
   padding: 0px;
-  color: blue;
   text-decoration: underline;
   cursor: auto;
-}
-
-a {
-  padding: 5px;
 }
