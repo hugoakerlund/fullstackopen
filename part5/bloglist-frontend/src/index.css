@@ -12,24 +12,3 @@ a {
   text-decoration: none;
   font-weight: bold;
 }
-
-.blog {
-  padding: 20px 20px 20px 20px;
-  border-style: solid;
-  border-width: 2px;
-  margin: 10px 10px;
-}
-
-.blogHeader {
-  padding-top: 20px;
-  padding-bottom: 20px;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 25px;
-}
-
-.blogDetails a {
-  padding: 0px;
-  text-decoration: underline;
-  cursor: auto;
-}

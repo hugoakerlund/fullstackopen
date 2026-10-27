@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import loginService from './services/login'
 import blogService from './services/blogs'
 
@@ -31,7 +31,6 @@ const NavigationElement = styled.div`
   display: inline;
   font-size: 20px;
   padding: 1em;
-  
 `
 
 
@@ -145,42 +144,43 @@ const App = () => {
       <Router>
         <div>
           <Navigation>
-          <NavigationElement>
-            <Link to="/">blogs</Link>
-          </NavigationElement>
-          {user && (
             <NavigationElement>
-              <Link to="/create">new blog</Link>
+              <Link to="/">blogs</Link>
             </NavigationElement>
-          )}
-          {user && (
-            <NavigationElement>
-              <LogoutButton onLogout={handleLogout} />
-            </NavigationElement>
-          )}
-          {!user && (
-            <NavigationElement>
-              <Link to="/login">login</Link>
-            </NavigationElement>
-          )}
+            {user && (
+              <NavigationElement>
+                <Link to="/create">new blog</Link>
+              </NavigationElement>
+            )}
+            {user && (
+              <NavigationElement>
+                <LogoutButton onLogout={handleLogout} />
+              </NavigationElement>
+            )}
+            {!user && (
+              <NavigationElement>
+                <Link to="/login">login</Link>
+              </NavigationElement>
+            )}
           </Navigation>
         </div>
-          <Notification message={notification.message} error={notification.error} />
+
+        <Notification message={notification.message} error={notification.error} />
 
         <Routes>
           <Route path="/" element={
-           <BlogList blogs={blogs} />
+            <BlogList blogs={blogs} />
           } />
           <Route path="/create" element={
             <BlogForm createBlog={addBlog} setNotification={setNotification} />
           } />
           <Route path="/login" element={
             <LoginForm onLogin={handleLogin} handleUsernameChange={handleUsernameChange}
-            handlePasswordChange={handlePasswordChange} username={username} password={password} />
-           } />
+              handlePasswordChange={handlePasswordChange} username={username} password={password} />
+          } />
           <Route path="/:id" element={
             <Blog blogs={blogs} removeBlog={deleteBlog} likeBlog={likeBlog} user={user} />
-           } />
+          } />
         </Routes>
       </Router>
     </Page>

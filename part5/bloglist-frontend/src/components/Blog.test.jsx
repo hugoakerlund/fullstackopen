@@ -3,20 +3,19 @@ import {
   BrowserRouter as Router,
 } from 'react-router-dom'
 import Blog from './Blog'
-import userEvent from '@testing-library/user-event'
 
 describe('<Blog />', () => {
 
   test('information and the number of likes are displayed to unauthenticated users, buttons are not displayed', async () => {
     const blogUser = { name: 'test' }
     const blogs = [
-    {
-      title: 'title',
-      author: 'author',
-      url: 'url',
-      likes: 1,
-      user: blogUser
-    }
+      {
+        title: 'title',
+        author: 'author',
+        url: 'url',
+        likes: 1,
+        user: blogUser
+      }
     ]
 
     const deleteBlog = vi.fn()
@@ -49,13 +48,13 @@ describe('<Blog />', () => {
     const authenticatedUser = { name: 'authenticated user' }
 
     const blogs = [
-    {
-      title: 'title',
-      author: 'author',
-      url: 'url',
-      likes: 1,
-      user: blogUser
-    }
+      {
+        title: 'title',
+        author: 'author',
+        url: 'url',
+        likes: 1,
+        user: blogUser
+      }
     ]
 
     const deleteBlog = vi.fn()
@@ -77,13 +76,13 @@ describe('<Blog />', () => {
   test('the blog’s creator is also shown the delete button', async () => {
     const blogUser = { name: 'test' }
     const blogs = [
-    {
-      title: 'title',
-      author: 'author',
-      url: 'url',
-      likes: 1,
-      user: blogUser
-    }
+      {
+        title: 'title',
+        author: 'author',
+        url: 'url',
+        likes: 1,
+        user: blogUser
+      }
     ]
 
     const deleteBlog = vi.fn()
